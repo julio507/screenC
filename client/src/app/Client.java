@@ -1,84 +1,67 @@
 package app;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.image.BufferedImage;
-import javax.swing.JFrame;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
-public class Client extends JFrame {
+public class Client {
 
-    byte buffer[] = null;
+    public static final int PORTA = 5000;
+    public static final int TAM_BUFFER = 1024;
 
-    Client(byte buffer[]) {
-        this.buffer = buffer;
-        setSize(320, 200);
-        setTitle("Mostrador");
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        repaint();
+    private static DatagramSocket clientSocket;
+
+    public static DatagramSocket getInstance()
+    {
+        try
+        {
+            if( clientSocket == null )
+            {
+                clientSocket = new DatagramSocket();
+            }
+        }
+
+        catch( Exception e )
+        {
+            e.printStackTrace();
+        }
+        
+        return clientSocket;
     }
 
-    @Override
-    public void paint(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+    public static void connect()
+    {
+        try
+        {
+            byte[] bufferSaida = new byte[TAM_BUFFER];
 
-        int scale = 1;
-        int offset = 40;
-        int aux = 0;
-        for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 20; j++) {
-                // porque & 0xFF --> byte -128 a 127 ....
-                // int i = 255; byte b = (byte) i; <- -1
-                // r g b a
-                Color cor = new Color(buffer[aux++] & 0xFF, buffer[aux++] & 0xFF, buffer[aux++] & 0xFF,
-                        buffer[aux++] & 0xFF);
-                g2.setColor(cor);
-                g2.drawRect(offset + i * scale, offset + j * scale, scale, scale);
-            }
+            InetAddress IpServidor = InetAddress.getByName("127.0.0.1");
+
+            DatagramPacket sendPacket = new DatagramPacket(bufferSaida, bufferSaida.length, IpServidor, PORTA);
+            getInstance().send(sendPacket);
+        }
+
+        catch ( Exception e )
+        {
+            e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) {
-        final int BLOCK_X = 20;
-        final int BLOCK_Y = 20;
-
-        byte buffer[] = new byte[BLOCK_X * BLOCK_Y * 4]; // a r g b (a=alpha)
+    public static byte[] receive()
+    {
+        byte[] bufferEntrada = new byte[TAM_BUFFER];
 
         try {
-            int aux = 0;
+            DatagramPacket receivePacket = new DatagramPacket(bufferEntrada, bufferEntrada.length);
+            getInstance().receive(receivePacket);
 
-            Robot robot = new Robot();
-            BufferedImage bi = robot.createScreenCapture(new Rectangle(1920, 1080));// pegar toda a minha tela a
-                                                                                    // resolução é de cada um, pesquisar
-                                                                                    // como saber.., tem
-
-            for (int i = 0; i < BLOCK_Y; i++) {
-                for (int j = 0; j < BLOCK_X; j++) {
-
-                    Color cor = new Color(bi.getRGB(i, j));
-
-                    buffer[aux++] = (byte) cor.getRed();
-                    buffer[aux++] = (byte) cor.getGreen();
-                    buffer[aux++] = (byte) cor.getBlue();
-                    buffer[aux++] = (byte) cor.getAlpha();
-
-                    // int pixel = bi.getRGB(i, j);
-                    // buffer[aux++] = (byte)((pixel & 0xFF000000 >> 24));
-                    // buffer[aux++] = (byte)((pixel & 0x00FF0000 >> 16));
-                    // buffer[aux++] = (byte)((pixel & 0x0000FF00 >> 8));
-                    // buffer[aux++] = (byte)((pixel & 0x000000FF >> 0));
-                }
-            }
-
-        } catch (Exception e) {
+            bufferEntrada = receivePacket.getData();
+        } 
+        
+        catch (Exception e) {
             e.printStackTrace();
         }
 
-        Client m = new Client(buffer);
-        m.setVisible(true);
-
-        System.out.println("Terminou");
+        return bufferEntrada;
     }
 }
