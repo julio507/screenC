@@ -18,20 +18,22 @@ public class Worker extends JFrame {
 
     @Override
     public void paint(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+        if( buffer != null )
+        {
+            Graphics2D g2 = (Graphics2D) g;
 
-        int scale = 1;
-        int offset = 40;
-        int aux = 0;
-        for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 20; j++) {
-                // porque & 0xFF --> byte -128 a 127 ....
-                // int i = 255; byte b = (byte) i; <- -1
-                // r g b a
-                Color cor = new Color(buffer[aux++] & 0xFF, buffer[aux++] & 0xFF, buffer[aux++] & 0xFF,
-                        buffer[aux++] & 0xFF);
-                g2.setColor(cor);
-                g2.drawRect(offset + i * scale, offset + j * scale, scale, scale);
+            int scale = 1;
+            int offset = 40;
+            int aux = 0;
+            for (int i = 0; i < 20; i++) {
+                for (int j = 0; j < 20; j++) {
+                    // porque & 0xFF --> byte -128 a 127 ....
+                    // int i = 255; byte b = (byte) i; <- -1
+                    // r g b a
+                    Color cor = new Color(buffer[aux++] & 0xFF, buffer[aux++] & 0xFF, buffer[aux++] & 0xFF, buffer[aux++] & 0xFF);
+                    g2.setColor( cor );
+                    g2.drawRect(offset + i * scale, offset + j * scale, scale, scale);
+                }
             }
         }
     }

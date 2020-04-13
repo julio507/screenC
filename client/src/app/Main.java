@@ -2,17 +2,28 @@ package app;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Client.connect();
-
+    public static void main(String[] args) 
+    {
         Worker w = new Worker();
 
         w.setVisible( true );
-
-        while( true )
+        
+        Client.connect();
+        
+        try
         {
-            w.receive();
-            w.repaint();
+            while( true )
+            {
+                w.receive();
+                w.repaint();
+
+                Thread.sleep( 5000 );
+            }
+        }
+
+        catch( Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }

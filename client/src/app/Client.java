@@ -7,7 +7,7 @@ import java.net.InetAddress;
 public class Client {
 
     public static final int PORTA = 5000;
-    public static final int TAM_BUFFER = 1024;
+    public static final int TAM_BUFFER = 1600;
 
     private static DatagramSocket clientSocket;
 

@@ -14,7 +14,7 @@ public class WorkerBlockCapture {
 
     public static void capture() {
         final int BLOCK_X = 20, BLOCK_Y = 20;
-        byte buffer[] = new byte[BLOCK_X * BLOCK_Y * 3]; // * 3 = cores RGB
+        byte buffer[] = new byte[BLOCK_X * BLOCK_Y * 4]; // * 3 = cores RGB
         try {
             int aux = 0;
 
@@ -34,14 +34,14 @@ public class WorkerBlockCapture {
                     buffer[aux++] = (byte) cor.getRed(); // R
                     buffer[aux++] = (byte) cor.getGreen(); // G
                     buffer[aux++] = (byte) cor.getBlue(); // B
-
-                    Server.send(buffer);
+                    buffer[aux++] = (byte) cor.getAlpha();// A
                     // buffer[aux++] = (byte) ((bi.getRGB(i, j) & 0xFF000000) >> 24); //
                     // Transparencia, modificar para x 4 o tamanhodo buffer
                     // System.out.print("(" + cR + " " + cG + " " + cB + ")");
                 }
-
             }
+
+            Server.send(buffer);
         } catch (Exception e) {
             e.printStackTrace();
         }

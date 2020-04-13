@@ -2,12 +2,23 @@ package app;
 
 public class Main 
 {
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         Server.connect();
 
-        while( true )
+        try
         {
-            WorkerBlockCapture.capture();
-        }        
+            while( true )
+            {
+                WorkerBlockCapture.capture();
+
+                Thread.sleep( 5000 );
+            }
+        }
+        
+        catch( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
 }
