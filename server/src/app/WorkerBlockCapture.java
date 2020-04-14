@@ -60,9 +60,8 @@ public class WorkerBlockCapture {
                         buffer[15] = (byte)((iY >> 0) & 0xff);
 
                         Server.send( buffer );
-                        System.out.println( "sent" );
 
-                        Thread.sleep( 10 );
+                        Thread.sleep( 100 );
 
                         buffer = new byte[ Server.TAM_BUFFER ]; 
 
