@@ -7,7 +7,7 @@ import java.net.InetAddress;
 public class Server {
 
     public static final int PORTA = 5000;
-    public static final int TAM_BUFFER = 1024;
+    public static final int TAM_BUFFER = 15 + ( WorkerBlockCapture.BLOCK_X * WorkerBlockCapture.BLOCK_Y * 4 );
 
     private static DatagramSocket serverSocket;
 
@@ -43,8 +43,12 @@ public class Server {
                 DatagramPacket receivePacket = new DatagramPacket(bufferEntrada, bufferEntrada.length);
                 getInstance().receive(receivePacket);
 
+                getInstance().send( receivePacket );
+
                 ipCliente = receivePacket.getAddress();
                 portaCliente = receivePacket.getPort();
+
+                System.out.println( "conected" + ipCliente.toString() );
             }
         }
 

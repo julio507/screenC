@@ -16,8 +16,6 @@ public class Main {
             {
                 w.receive();
                 w.repaint();
-
-                Thread.sleep( 5000 );
             }
         }
 

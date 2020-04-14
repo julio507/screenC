@@ -11,8 +11,6 @@ public class Main
             while( true )
             {
                 WorkerBlockCapture.capture();
-
-                Thread.sleep( 5000 );
             }
         }
         
