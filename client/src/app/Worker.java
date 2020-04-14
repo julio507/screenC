@@ -3,17 +3,20 @@ package app;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.nio.ByteBuffer;
 
 import javax.swing.JFrame;
 
 public class Worker extends JFrame {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     byte buffer[] = null;
 
     Worker() {
-
-        setSize(1920, 1080);
+        setExtendedState( JFrame.MAXIMIZED_BOTH );
+        setSize(300, 500);
         setTitle("Mostrador");
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
@@ -24,7 +27,6 @@ public class Worker extends JFrame {
         {
             Graphics2D g2 = (Graphics2D) g;
 
-            int offset = 40;
             int scale = 1;
             int aux = 16;
 

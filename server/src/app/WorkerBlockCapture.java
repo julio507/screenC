@@ -6,17 +6,21 @@
 package app;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
+import java.awt.Toolkit;
 
 public class WorkerBlockCapture {
+
+    static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     final static int BLOCK_X = 20, BLOCK_Y = 20;
 
     public static void capture() {
 
-        int RES_X = 1200, RES_Y = 720;
+        int RES_X = (int) screenSize.getWidth(), RES_Y = (int) screenSize.getHeight();
 
         byte buffer[] = new byte[ Server.TAM_BUFFER ]; // * 3 = cores RGB
 
