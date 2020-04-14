@@ -12,24 +12,72 @@ import java.awt.image.BufferedImage;
 
 public class WorkerBlockCapture {
 
+    final static int BLOCK_X = 20, BLOCK_Y = 20;
+
     public static void capture() {
-        final int BLOCK_X = 20, BLOCK_Y = 20;
-        byte buffer[] = new byte[BLOCK_X * BLOCK_Y * 4]; // * 3 = cores RGB
+
+        int RES_X = 1200, RES_Y = 720;
+
+        byte buffer[] = new byte[ Server.TAM_BUFFER ]; // * 3 = cores RGB
+
         try {
-            int aux = 0;
+            int aux = 16;
 
             Robot robot = new Robot();
-            BufferedImage bi = robot.createScreenCapture(new Rectangle(1920, 1080));// pegar toda a minha tela a
+            BufferedImage bi = robot.createScreenCapture(new Rectangle( RES_X, RES_Y));// pegar toda a minha tela a
                                                                                     // resolução é de cada um, pesquisar
                                                                                     // como saber.., tem
 
-            for (int i = 0; i < BLOCK_Y; i++) {
-                for (int j = 0; j < BLOCK_X; j++) {
+            int iX = 0;
+            int iY = 0;
+
+            for (int x = 0; x < RES_X; x++) {
+                for (int y = 0; y < RES_Y; y++) {
+
+                    if( ( aux + 4 ) >= Server.TAM_BUFFER || ( y + 1 ) == RES_Y  )
+                    {
+                        buffer[0] = (byte)((iX >> 24) & 0xff); 
+                        buffer[1] = (byte)((iX >> 16) & 0xff);
+                        buffer[2] = (byte)((iX >> 8) & 0xff);
+                        buffer[3] = (byte)((iX >> 0) & 0xff);
+
+                        buffer[4] = (byte)((iY >> 24) & 0xff); 
+                        buffer[5] = (byte)((iY >> 16) & 0xff);
+                        buffer[6] = (byte)((iY >> 8) & 0xff);
+                        buffer[7] = (byte)((iY >> 0) & 0xff);
+
+                        iX = new Integer( x );
+                        iY = new Integer( y );
+
+                        buffer[8] = (byte)((iX >> 24) & 0xff); 
+                        buffer[9] = (byte)((iX >> 16) & 0xff);
+                        buffer[10] = (byte)((iX >> 8) & 0xff);
+                        buffer[11] = (byte)((iX >> 0) & 0xff);
+
+                        buffer[12] = (byte)((iY >> 24) & 0xff); 
+                        buffer[13] = (byte)((iY >> 16) & 0xff);
+                        buffer[14] = (byte)((iY >> 8) & 0xff);
+                        buffer[15] = (byte)((iY >> 0) & 0xff);
+
+                        Server.send( buffer );
+                        System.out.println( "sent" );
+
+                        Thread.sleep( 10 );
+
+                        buffer = new byte[ Server.TAM_BUFFER ]; 
+
+                        aux = 16;
+
+                        if( ( y + 1 ) == RES_Y  )
+                        {
+                            iY = 0;
+                        }
+                    }
 
                     // int cR = ((bi.getRGB(i, j) & 0x00FF0000) >> 16);
                     // int cG = ((bi.getRGB(i, j) & 0x0000FF00) >> 8);
                     // int cB = ((bi.getRGB(i, j) & 0x000000FF) >> 0);
-                    Color cor = new Color(bi.getRGB(i, j));
+                    Color cor = new Color(bi.getRGB(x, y));
 
                     buffer[aux++] = (byte) cor.getRed(); // R
                     buffer[aux++] = (byte) cor.getGreen(); // G
@@ -41,7 +89,6 @@ public class WorkerBlockCapture {
                 }
             }
 
-            Server.send(buffer);
         } catch (Exception e) {
             e.printStackTrace();
         }

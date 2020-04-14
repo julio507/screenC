@@ -7,7 +7,7 @@ import java.net.InetAddress;
 public class Client {
 
     public static final int PORTA = 5000;
-    public static final int TAM_BUFFER = 1600;
+    public static final int TAM_BUFFER = 1615;
 
     private static DatagramSocket clientSocket;
 
@@ -39,6 +39,11 @@ public class Client {
 
             DatagramPacket sendPacket = new DatagramPacket(bufferSaida, bufferSaida.length, IpServidor, PORTA);
             getInstance().send(sendPacket);
+
+            DatagramPacket response = new DatagramPacket( bufferSaida, bufferSaida.length, IpServidor, PORTA );
+            getInstance().receive( response );
+
+            System.out.println( "connected" + sendPacket.getAddress() );
         }
 
         catch ( Exception e )
